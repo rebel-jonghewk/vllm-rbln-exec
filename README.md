@@ -18,7 +18,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 # Or: pip install uv
 
 # 3. Clone the repository
-git clone <your-repo-url> vllm-rbln-exec
+git clone git@github.com:rebel-jonghewk/vllm-rbln-exec.git
 cd vllm-rbln-exec
 
 # 4. Create virtual environment
