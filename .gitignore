@@ -1,0 +1,67 @@
+# vLLM source (editable install)
+vllm_source/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Build artifacts
+build/
+dist/
+*.egg-info
+.eggs/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Cache directories
+cache/
+.cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+
+# Profiler outputs
+profile/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# Distribution / packaging
+wheels/
+pip-wheel-metadata/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Environment variables
+.env
+.env.local
+
+# Logs
+*.log
+logs/
+
+# uv
+.uv/
+uv.lock

@@ -1,0 +1,64 @@
+[project]
+name = "vllm-rbln-exec"
+version = "0.1.0"
+description = "CPU vs RBLN parity runner with vLLM 0.9.1 (CPU)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Apache-2.0" }
+
+dependencies = [
+  "numpy>=2.0",
+  "transformers>=4.43,<4.54.0",  # Compatible with vLLM 0.9.1
+  "huggingface-hub>=0.24.0",
+  "tqdm",
+  "requests",
+  "pyyaml",
+  "vllm-rbln",
+  "attrs", 
+  "cloudpickle",
+  "cryptography",
+  "decorator",
+  "ml_dtypes",
+  "numpy",
+  "packaging",
+  "prettytable>=3.8",
+  "psutil",
+  "scipy",
+  "tornado",
+  "tqdm",
+  "typing_extensions",
+  "triton-rbln==3.2.0+rbln.git41b1a8b7",
+
+  # Note: vLLM must be installed separately - see scripts/install-vllm.sh
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest>=7.0",
+  "pytest-cov",
+]
+
+dev = [
+  "ruff",
+  "mypy",
+  "pytest>=7.0",
+]
+
+[tool.uv.sources]
+vllm-rbln = { git = "https://github.com/rebellions-sw/vllm-rbln.git", branch = "moe_pp_poc_bf16" }
+
+[project.scripts]
+vllm-rbln-exec = "vllm_rbln_exec.parity_runner:main"
+vllm-rbln-setup = "vllm_rbln_exec.setup:install_vllm"
+
+[build-system]
+requires = ["setuptools>=49.4.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.uv]
+package = true
+dev-dependencies = []
+extra-index-url = ["https://pypi.rebellions.in"]
