@@ -62,3 +62,4 @@ where = ["src"]
 package = true
 dev-dependencies = []
 extra-index-url = ["https://pypi.rebellions.in"]
+index-strategy = "unsafe-best-match"  # Add this line

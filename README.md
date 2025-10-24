@@ -23,8 +23,7 @@ cd vllm-rbln-exec
 
 # 4. Create virtual environment
 uv venv
-source .venv/bin/activate  # On Linux/macOS
-# .venv\Scripts\activate   # On Windows
+source .venv/bin/activate
 
 # 5. Install vLLM and dependencies
 make install  # Takes 10-15 minutes (builds vLLM from source)
@@ -37,6 +36,9 @@ vllm-rbln-exec --model llama3.2-1b --prompts "Hello, world!" "Once upon a time"
 
 # 8. Full vocabulary inspection
 vllm-rbln-exec --model llama3.2-1b --logprobs -1 --max-tokens 128
+
+# 9. MoE
+vllm-rbln-exec --model qwen1.5-moe-15b --num-hidden-layers 1 --use-cache --ep --tp 4 --max-model-len 8192 --block 4096
 ```
 
 **That's it!** See [Usage](#usage) for more examples.

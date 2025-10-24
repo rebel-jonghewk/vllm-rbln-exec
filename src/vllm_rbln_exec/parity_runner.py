@@ -9,6 +9,9 @@ import numpy as np
 import torch
 import hashlib
 
+import socket
+import sys
+
 # ========= Tunables =========
 EPSILON = 1e-1 * 5
 PRINT_VECT_SNIPPET = True   # show a short head/tail snippet under "just print logits"
@@ -37,7 +40,7 @@ parser.add_argument('--dp', type=int, default=1)
 parser.add_argument('--ep', action='store_true')
 parser.add_argument('--profile', action='store_true')
 parser.add_argument('--max-model-len', type=int, default=40 * 1024)
-parser.add_argument('--block-size-rbln', type=int, default=8 * 1024)
+parser.add_argument('--block-size', type=int, default=8 * 1024)
 parser.add_argument('--max-batched', type=int, default=128)
 parser.add_argument('--prompts', type=str, nargs='*', default=None,
                     help="Explicit list of prompts. If omitted, DEFAULT_PROMPTS are used/cycled.")
@@ -150,8 +153,22 @@ def generate_llm_args(device: str):
         llm_args["hf_overrides"] = partial(hf_override_num_layers,
                                            num_hidden_layers=args.num_hidden_layers)
     if device == "rbln":
-      llm_args["block_size"] = args.block_size_rbln
+      llm_args["block_size"] = args.block_size
     return llm_args
+
+def get_local_ip():
+    """Get the local IP address of the machine."""
+    try:
+        # Create a socket to determine the local IP
+        # This doesn't actually connect, just determines routing
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        local_ip = s.getsockname()[0]
+        s.close()
+        return local_ip
+    except Exception as e:
+        print(f"Error getting IP address: {e}", file=sys.stderr)
+        sys.exit(1)
 
 def set_env_for_device(device: str):
     for k in [
@@ -167,6 +184,10 @@ def set_env_for_device(device: str):
         os.environ["VLLM_CPU_DISABLE_IPEX"] = "1" 
         # os.environ["VLLM_ATTENTION_BACKEND"] = "TORCH_SDPA"  # Use safer attention backend
     elif device == "rbln":
+        ip_address = get_local_ip()
+        os.environ['RBLN_ROOT_IP'] = ip_address
+        os.environ['RBLN_LOCAL_IP'] = ip_address
+        os.environ["VLLM_RBLN_METRICS"] = "1"
         os.environ["RBLN_KERNEL_MODE"] = "triton"
         os.environ["VLLM_USE_V1"] = "0"
         os.environ["USE_VLLM_MODEL"] = "1"
@@ -178,6 +199,10 @@ def set_env_for_device(device: str):
         profile_dir = f'./profile/{device}_{model_id.replace("/", "_")}'
         os.makedirs(profile_dir, exist_ok=True)
         os.environ['VLLM_TORCH_PROFILER_DIR'] = profile_dir
+
+
+
+
 
 def cache_path():
     os.makedirs("./cache", exist_ok=True)
